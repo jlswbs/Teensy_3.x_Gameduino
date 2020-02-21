@@ -4,9 +4,9 @@
 #include "GD.h"
 #include "randreg.h"
 
-#define WIDTH 256/2
-#define HEIGHT 256/2
-#define MAX_GEN 995
+#define WIDTH 256
+#define HEIGHT 256
+#define MAX_GEN 999
 
 void RandGrid();
 void RunGrid();
@@ -15,7 +15,7 @@ int Neighbours(int x, int y);
 
   bool grid[2][WIDTH][HEIGHT];
   int current, generations;
-  char msg1[30], msg2[30];
+  char msg1[30];
   int i, j;
    
 byte replicate(byte color)
@@ -49,7 +49,7 @@ void setup()
   GD.wr16(PALETTE4A + 4, RGB(0,255,255));
   GD.wr16(PALETTE4A + 6, RGB(255,255,255));
   GD.putstr(6, 1, "Conways Game of Life cellular automata");
-  GD.putstr(16, 36, "Created by JLS 2019");
+  GD.putstr(16, 36, "Created by JLS 2020");
     
   RandGrid();
   DrawGrid();
@@ -64,11 +64,8 @@ void loop()
 
   generations++;
 
-  GD.putstr(1, 36, msg1);
-  sprintf(msg1, "%3d cnt", GD.rd(0x2802));
-
-  GD.putstr(41, 36, msg2);
-  sprintf(msg2, "%3d gens", generations);
+  GD.putstr(41, 36, msg1);
+  sprintf(msg1, "%3d gens", generations);
   
   if (generations > MAX_GEN) {
     generations = 0;
@@ -157,8 +154,8 @@ void DrawGrid()
     cx = 0;
     for (x = 0; x < WIDTH; x++) {
       if (grid[1-current][x][y] != grid[current][x][y]) {
-        if(grid[current][x][y]) setpixel(2*cx, 2*cy, replicate(1));
-        else setpixel(2*cx, 2*cy, replicate(0));
+        if(grid[current][x][y]) setpixel(cx, cy, replicate(1));
+        else setpixel(cx, cy, replicate(0));
         }
     cx += 1;
     }

@@ -1,4 +1,4 @@
-static PROGMEM prog_uchar randreg_code[] = {
+const PROGMEM unsigned char randreg_code[] = {
 0x81,0x15,
 0x00,0x80,
 0xED,0xFF,

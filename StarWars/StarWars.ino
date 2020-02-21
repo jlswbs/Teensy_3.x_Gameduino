@@ -4,9 +4,9 @@
 #include "GD.h"
 #include "randreg.h"
 
-#define WIDTH 244/2
-#define HEIGHT 242/2
-#define MAX_GEN 750
+#define WIDTH 256
+#define HEIGHT 256
+#define MAX_GEN 999
 
 void step();
 int wrap(int v, int m);
@@ -24,7 +24,7 @@ void randseed();
 
   int x,y,nx,ny;
   int generations;
-  char msg1[30], msg2[30];
+  char msg1[30];
   
    
 byte replicate(byte color)
@@ -42,6 +42,7 @@ void setpixel(byte x, byte y, byte color)
 
 void setup()
 {
+
   int i;
   GD.begin();
   GD.microcode(randreg_code, sizeof(randreg_code));
@@ -58,9 +59,10 @@ void setup()
   GD.wr16(PALETTE4A + 4, RGB(0,255,255));
   GD.wr16(PALETTE4A + 6, RGB(255,0,255));
   GD.putstr(12, 1, "StarWars cellular automata");
-  GD.putstr(16, 36, "Created by JLS 2019");
+  GD.putstr(16, 36, "Created by JLS 2020");
     
   randseed();
+  
 }
 
 
@@ -76,11 +78,8 @@ void loop()
 
   generations++;
 
-  GD.putstr(1, 36, msg1);
-  sprintf(msg1, "%3d cnt", GD.rd(0x2802));
-
-  GD.putstr(41, 36, msg2);
-  sprintf(msg2, "%3d gens", generations);
+  GD.putstr(41, 36, msg1);
+  sprintf(msg1, "%3d gens", generations);
   
   if (generations > MAX_GEN) {
     generations = 0;
@@ -175,8 +174,8 @@ void draw_type(int min_alive, int max_alive, int r) {
       if (self == DEAD) continue;  
       int alive = alive_counts[x][y];
       if (alive < min_alive || alive > max_alive) continue;
-      setpixel (6+(2*x), 7+(2*y), replicate(r));
+      setpixel (x, y, replicate(r));
+    }
   }
-}
  
-  }
+}
