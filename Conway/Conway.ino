@@ -15,7 +15,7 @@ int Neighbours(int x, int y);
 
   bool grid[2][WIDTH][HEIGHT];
   int current, generations;
-  char msg1[30];
+  char msg[30];
   int i, j;
    
 byte replicate(byte color)
@@ -41,15 +41,18 @@ void setup()
   int x = 72 + 16 * ((i >> 4) & 15);
   int y = 22 + 16 * (i & 15); 
   int image = i & 63;
-  int pal =   3-(i >> 6);
+  int pal = 3 - (i >> 6);
   GD.sprite(i, x, y, image, 0x8 | (pal << 1), 0,0);}
   GD.fill(RAM_SPRIMG, 0, 16384);
-  GD.wr16(PALETTE4A, RGB(0,0,0));
+  GD.wr16(PALETTE4A, RGB(256,0,0));
   GD.wr16(PALETTE4A + 2, RGB(255,255,0));
   GD.wr16(PALETTE4A + 4, RGB(0,255,255));
   GD.wr16(PALETTE4A + 6, RGB(255,255,255));
   GD.putstr(6, 1, "Conways Game of Life cellular automata");
   GD.putstr(16, 36, "Created by JLS 2020");
+  GD.putstr(42, 36, "gen");
+
+  srand(GD.rd(0x280E));
     
   RandGrid();
   DrawGrid();
@@ -62,15 +65,15 @@ void loop()
   RunGrid();
   DrawGrid();
 
-  generations++;
-
-  GD.putstr(41, 36, msg1);
-  sprintf(msg1, "%3d gens", generations);
+  GD.putstr(46, 36, msg);
+  sprintf(msg, "%3d", generations);
   
-  if (generations > MAX_GEN) {
+  if (generations == MAX_GEN) {
     generations = 0;
     RandGrid();
   }
+
+  generations++;
 
   GD.waitvblank();
     
@@ -83,7 +86,7 @@ void RandGrid()
   generations = 0;
   for (i = 0; i < WIDTH; i++) {
     for (j = 0; j < HEIGHT; j++) {
-      grid[0][i][j] =  GD.rd(0x280E)%2;
+      grid[0][i][j] =  rand()%2;
       grid[1][i][j] = 0;
     }
   }

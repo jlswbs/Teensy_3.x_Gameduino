@@ -2,6 +2,7 @@
 
 #include "SPI.h"
 #include "GD.h"
+#include "randreg.h"
 
 #define WIDTH 256
 #define HEIGHT 256
@@ -89,6 +90,7 @@ void setup()
 {
   int i;
   GD.begin();
+  GD.microcode(randreg_code, sizeof(randreg_code));
   GD.ascii();
   for (i = 0; i < 256; i++) {
   int x = 72 + 16 * ((i >> 4) & 15);
@@ -97,13 +99,15 @@ void setup()
   int pal =   3-(i >> 6);
   GD.sprite(i, x, y, image, 0x8 | (pal << 1), 0,0);}
   GD.fill(RAM_SPRIMG, 0, 16384);
-  GD.wr16(PALETTE4A, RGB(0,0,0));
+  GD.wr16(PALETTE4A, RGB(256,0,0));
   GD.wr16(PALETTE4A + 2, RGB(255,255,0));
   GD.wr16(PALETTE4A + 4, RGB(0,255,255));
   GD.wr16(PALETTE4A + 6, RGB(255,0,255));
   GD.putstr(16, 1, "Mandelbulber fractal");
   GD.putstr(16, 36, "Created by JLS 2020");
 
+  srand(GD.rd(0x280E));
+  
   mandelbulber();
 
 }

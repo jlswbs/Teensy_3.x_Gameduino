@@ -24,7 +24,7 @@ void randseed();
 
   int x,y,nx,ny;
   int generations;
-  char msg1[30];
+  char msg[30];
   
    
 byte replicate(byte color)
@@ -54,12 +54,15 @@ void setup()
   int pal =   3-(i >> 6);
   GD.sprite(i, x, y, image, 0x8 | (pal << 1), 0,0);}
   GD.fill(RAM_SPRIMG, 0, 16384);
-  GD.wr16(PALETTE4A, RGB(0,0,0));
+  GD.wr16(PALETTE4A, RGB(256,0,0));
   GD.wr16(PALETTE4A + 2, RGB(255,255,0));
   GD.wr16(PALETTE4A + 4, RGB(0,255,255));
   GD.wr16(PALETTE4A + 6, RGB(255,0,255));
   GD.putstr(12, 1, "StarWars cellular automata");
   GD.putstr(16, 36, "Created by JLS 2020");
+  GD.putstr(42, 36, "gen");
+
+  srand(GD.rd(0x280E));
     
   randseed();
   
@@ -76,15 +79,15 @@ void loop()
   draw_type(2,49, 2);
   draw_type(0,1, 1);
 
-  generations++;
-
-  GD.putstr(41, 36, msg1);
-  sprintf(msg1, "%3d gens", generations);
+  GD.putstr(46, 36, msg);
+  sprintf(msg, "%3d", generations);
   
-  if (generations > MAX_GEN) {
+  if (generations == MAX_GEN) {
     generations = 0;
     randseed();
   }
+
+  generations++;
 
   GD.waitvblank();
 }
@@ -97,7 +100,7 @@ void randseed() {
   for (x = 0; x < WIDTH; x++) {
     for (y = 0; y < HEIGHT; y++) {
     
-      current[x][y] = GD.rd(0x280E)%4;
+      current[x][y] = rand()%4;
       alive_counts[x][y] = 0;  
     }
   }
